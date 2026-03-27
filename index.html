@@ -3,122 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiyana Romance - Beta 1.3</title>
+    <title>Kiyana Romance - Version 1.0</title>
     <style>
-        /* --- 🎨 CSS: UI & Animations --- */
+        /* --- 🎨 CSS: Aesthetic & High-End UI --- */
+        :root { 
+            --pink-main: #ff8fa3; --pink-light: #ffcad4; 
+            --blue-sky: #ade8f4; --glass: rgba(255, 255, 255, 0.98); 
+            --text: #4a4a4a;
+        }
+        
         body { 
-            background: linear-gradient(135deg, #ffd1dc 0%, #b2e2f2 100%);
-            font-family: 'Tahoma', 'Kanit', sans-serif;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--blue-sky) 100%);
+            font-family: 'Kanit', 'Tahoma', sans-serif;
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0; overflow: hidden;
+            height: 100vh; margin: 0; overflow: hidden; color: var(--text);
         }
 
         #game-window {
-            width: 900px; height: 600px;
-            background: white; border-radius: 30px;
-            position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            border: 8px solid #ffffff; overflow: hidden;
+            width: 1080px; height: 780px; background: white;
+            border-radius: 40px; position: relative; box-shadow: 0 50px 100px rgba(0,0,0,0.25);
+            border: 10px solid white; overflow: hidden;
         }
 
-        /* หน้าจอเมนูหลัก */
-        .screen {
-            position: absolute; inset: 0; display: flex;
-            flex-direction: column; justify-content: center;
-            align-items: center; z-index: 100; transition: 0.5s;
-            background: rgba(255, 255, 255, 0.95);
-        }
-
+        /* Screens */
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; 
+                  justify-content: center; align-items: center; z-index: 100; background: white; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
 
-        /* ปุ่มกดสไตล์เกมน่ารักๆ */
-        .btn-menu {
-            padding: 15px 50px; font-size: 1.2rem; cursor: pointer;
-            border-radius: 50px; border: none; background: #ff8fa3;
-            color: white; margin: 10px; font-weight: bold;
-            transition: 0.3s; box-shadow: 0 5px 0 #e67387;
+        /* Buttons */
+        .btn-main {
+            padding: 18px 0; width: 380px; font-size: 1.3rem; cursor: pointer; border-radius: 50px;
+            border: none; background: var(--pink-main); color: white; font-weight: bold;
+            margin: 10px; transition: 0.3s; box-shadow: 0 6px 0 #e67387;
         }
-        .btn-menu:hover { background: #ff758f; transform: scale(1.05); }
-        .btn-menu:active { transform: translateY(4px); box-shadow: none; }
-        .btn-menu:disabled { background: #ccc; box-shadow: 0 5px 0 #999; cursor: not-allowed; }
+        .btn-main:hover { background: #ff4d6d; transform: translateY(-3px); }
+        .btn-main:active { transform: translateY(3px); box-shadow: none; }
+        .btn-extra { background: #9b59b6; box-shadow: 0 6px 0 #8e44ad; }
+        .btn-extra:hover { background: #8e44ad; }
 
-        /* แผงควบคุมด้านบน */
-        .top-nav {
-            position: absolute; top: 15px; right: 20px;
-            display: flex; gap: 10px; z-index: 50;
+        /* Extra Profile Card */
+        .profile-card {
+            background: #fff9fa; border: 3px dashed var(--pink-main);
+            padding: 30px; border-radius: 30px; width: 80%; display: grid;
+            grid-template-columns: 1fr 2fr; gap: 30px; text-align: left;
         }
-        .btn-action { padding: 5px 15px; background: #81c784; color: white; border-radius: 10px; border: none; cursor: pointer; font-size: 0.8rem; }
-        .btn-reset { background: #e57373; }
+        .profile-img { font-size: 8rem; background: white; border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 2px solid #eee; }
+        .profile-info h3 { margin: 0 0 10px 0; color: var(--pink-main); border-bottom: 2px solid var(--pink-light); padding-bottom: 5px; }
+        .profile-info p { margin: 8px 0; font-size: 1.1rem; }
 
-        /* กล่องบทสนทนา */
-        #dialogue-container {
+        /* Story UI */
+        #story-box { 
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 85%; height: 160px; background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px; border: 3px solid #ffcada; padding: 25px;
-            box-sizing: border-box;
+            width: 94%; height: 320px; background: var(--glass);
+            border-radius: 35px; border: 4px solid #ffcada; padding: 45px; box-sizing: border-box;
         }
-
-        #name-tag {
-            position: absolute; top: -15px; left: 30px;
-            background: #ff8fa3; color: white; padding: 5px 25px;
-            border-radius: 15px; font-weight: bold;
+        #name-label { 
+            position: absolute; top: -25px; left: 50px; background: var(--pink-main);
+            color: white; padding: 10px 45px; border-radius: 20px; font-weight: bold; font-size: 1.4rem;
         }
+        #text-content { font-size: 1.25rem; line-height: 2; height: 180px; overflow-y: auto; text-align: left; white-space: pre-wrap; }
+        #btn-next { position: absolute; bottom: 25px; right: 45px; background: #3498db; color: white; border: none; padding: 10px 35px; border-radius: 15px; cursor: pointer; font-weight: bold; }
 
-        #text-content { font-size: 1.1rem; line-height: 1.6; color: #444; }
-
-        /* ปุ่มถัดไป */
-        #btn-next {
-            position: absolute; bottom: 15px; right: 20px;
-            padding: 5px 20px; background: #3498db; color: white;
-            border-radius: 10px; border: none; cursor: pointer;
-        }
-
-        /* ตัวเลือก */
-        #choice-box {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            display: none; flex-direction: column; gap: 15px; z-index: 60;
-        }
-
-        /* พื้นหลังจำลองโตเกียว */
-        #bg-scene {
-            width: 100%; height: 100%; background: #fdfdfd;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 10rem; opacity: 0.1;
-        }
+        /* Choice UI */
+        #choice-area { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); display: none; flex-direction: column; gap: 15px; z-index: 200; width: 50%; }
+        
+        .top-nav { position: absolute; top: 25px; right: 35px; display: flex; gap: 10px; z-index: 150; }
+        .btn-nav { padding: 8px 18px; font-size: 0.8rem; background: #adb5bd; color: white; border-radius: 12px; border: none; cursor: pointer; }
+        .status-success { color: #2ecc71; font-weight: bold; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div id="game-window">
     
-    <div id="menu-screen" class="screen">
-        <h1 style="color: #ff8fa3; font-size: 3rem; margin-bottom: 0;">Tokyo Heartbeat</h1>
-        <p style="color: #999; margin-bottom: 40px;">Beta 1.3 - Kiyana Hinami Story</p>
-        <button class="btn-menu" onclick="showNameInput()">START GAME</button>
-        <button id="btn-continue" class="btn-menu" onclick="continueGame()" disabled>CONTINUE</button>
+    <div id="screen-menu" class="screen">
+        <h1 style="color: var(--pink-main); font-size: 5rem; margin: 0;">Tokyo Heartbeat</h1>
+        <p style="color: #95a5a6; margin-bottom: 40px; font-size: 1.5rem;">Official Version 1.0</p>
+        <button class="btn-main" onclick="showScreen('screen-start-select')">START GAME</button>
+        <button id="btn-menu-cont" class="btn-main" onclick="showScreen('screen-continue-select')" disabled>CONTINUE</button>
+        <button class="btn-main btn-extra" onclick="showScreen('screen-extra')">EXTRA (ข้อมูลตัวละคร)</button>
     </div>
 
-    <div id="name-screen" class="screen hidden">
-        <h2>คุณชื่ออะไร รุ่นพี่?</h2>
-        <input type="text" id="p-name-input" placeholder="ใส่ชื่อของคุณ..." maxlength="12" 
-               style="padding:15px; border-radius:15px; border:2px solid #ffcada; margin-bottom:20px; text-align:center; font-size:1.2rem; outline:none;">
-        <button class="btn-menu" onclick="initNewGame()">ตกลง</button>
-        <button onclick="backToMenu()" style="background:none; border:none; color:#999; cursor:pointer;">ย้อนกลับ</button>
+    <div id="screen-extra" class="screen hidden">
+        <h2 style="color: #9b59b6;">Character Profile</h2>
+        <div class="profile-card">
+            <div class="profile-img">🎮</div>
+            <div class="profile-info">
+                <h3>Kiyana Hinami (คิยานะ ฮินามิ)</h3>
+                <p><b>อายุ:</b> 16 ปี (มัธยมปลายปี 1 ห้อง A)</p>
+                <p><b>นิสัย:</b> โลกส่วนตัวสูง ชอบอิสระ ติดเกมงอมแงม ปากร้ายแต่ใจอ่อน (ซึนเดระสุดๆ)</p>
+                <p><b>รูปลักษณ์:</b> ผมยาวสีดำขลับมักจะยุ่งนิดๆ ดวงตากลมโตที่จ้องแต่หน้าจอเกม</p>
+                <p><b>การแต่งตัว:</b> ชุดนักเรียน Yoyogi Academy ที่ปล่อยชายเสื้อออกนอกกระโปรงแบบไม่แคร์กฎ</p>
+                <p><b>สิ่งที่ชอบ:</b> เกมทุกแนว, แซนวิชฝีมือรุ่นพี่, ความเงียบ, แมว</p>
+                <p><b>สิ่งที่ไม่ชอบ:</b> คนขี้ตื๊อ, ที่ที่มีคนเยอะๆ, การถูกบังคับให้เลิกเล่นเกม</p>
+            </div>
+        </div>
+        <button onclick="showScreen('screen-menu')" style="margin-top:30px; background:none; border:none; color:#999; cursor:pointer; font-size:1.2rem;">◀ กลับหน้าหลัก</button>
+    </div>
+
+    <div id="screen-start-select" class="screen hidden">
+        <h2 style="color: var(--pink-main);">เลือกบทที่ต้องการเริ่มใหม่</h2>
+        <div class="chapter-list">
+            <button class="btn-main" onclick="prepStart(1)">Chapter 1: The Loner's Rhythm</button>
+            <button class="btn-main" disabled style="opacity: 0.5;">Chapter 2: Coming Soon...</button>
+        </div>
+        <button onclick="showScreen('screen-menu')" style="margin-top:20px; background:none; border:none; color:#999; cursor:pointer;">ย้อนกลับ</button>
+    </div>
+
+    <div id="screen-continue-select" class="screen hidden">
+        <h2 style="color: var(--pink-main);">เล่นต่อจากที่บันทึกไว้</h2>
+        <div id="cont-list" class="chapter-list"></div>
+        <button onclick="showScreen('screen-menu')" style="margin-top:20px; background:none; border:none; color:#999; cursor:pointer;">ย้อนกลับ</button>
+    </div>
+
+    <div id="screen-name" class="screen hidden">
+        <h2 style="color: var(--pink-main);">ยินดีที่ได้รู้จัก "รุ่นพี่ 2-B"</h2>
+        <p>คุณชื่ออะไรครับ?</p>
+        <input type="text" id="p-name-input" placeholder="ระบุชื่อของคุณ..." maxlength="12" 
+               style="padding:18px; border-radius:20px; border:3px solid var(--pink-light); margin-bottom:30px; width:400px; text-align:center; font-size:1.6rem; outline:none;">
+        <button class="btn-main" onclick="beginStory()">เริ่มการเดินทาง</button>
     </div>
 
     <div class="top-nav">
-        <button class="btn-action" onclick="saveGame()">SAVE</button>
-        <button class="btn-action btn-reset" onclick="resetAll()">RESET</button>
-        <button class="btn-action" style="background:#95a5a6" onclick="backToMenu()">MENU</button>
+        <button class="btn-nav" style="background:#81c784;" onclick="saveGame()">SAVE</button>
+        <button class="btn-nav" style="background:#e57373;" onclick="resetGame()">RESET</button>
+        <button class="btn-nav" onclick="showScreen('screen-menu')">MENU</button>
     </div>
 
-    <div id="bg-scene">🏫</div>
+    <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; font-size:30rem; opacity:0.03; pointer-events:none;">🌸</div>
 
-    <div id="choice-box"></div>
+    <div id="choice-area"></div>
 
-    <div id="dialogue-container">
-        <div id="name-tag"></div>
+    <div id="story-box">
+        <div id="name-label"></div>
         <div id="text-content"></div>
-        <button id="btn-next" onclick="nextStep()">ถัดไป ▶</button>
+        <button id="btn-next" onclick="doNext()">อ่านต่อ ▶</button>
     </div>
 
 </div>
@@ -126,157 +145,125 @@
 <script>
     let pName = "";
     let step = 0;
-    let lovePts = 0;
+    let love = 0;
+    let chId = 1;
+    let completed = [];
 
-    // --- 📖 เนื้อเรื่องบทที่ 1: 6 ส่วนแบบยาวๆ ---
+    // --- 📖 เนื้อเรื่อง 30 ส่วน (Chapter 1) ---
     const getStory = () => [
-        // ส่วนที่ 1: การเดินทางตอนพักเที่ยง
-        { name: "บรรยาย", icon: "🌸", text: "เสียงระฆังโรงเรียน Yoyogi Academy ดังขึ้นเป็นสัญญาณพักเที่ยง ท่ามกลางบรรยากาศที่แสนคึกคักของย่านชิบูย่า แสงแดดส่องผ่านหน้าต่างห้องเรียน 2-B ลงมาที่โต๊ะของคุณพอดี" },
-        { name: pName, icon: "🏫", text: "เฮ้อ... เลิกเรียนซะที วันนี้เรียนคณิตศาสตร์ซะจนปวดหัวไปหมดเลยแฮะ ต้องหาอะไรผ่อนคลายหน่อยแล้ว" },
-        { name: "บรรยาย", icon: "🍱", text: "คุณหยิบข้าวกล่องที่ตั้งใจทำมาอย่างดีขึ้นมา ในใจก็นึกถึงรุ่นน้องคนหนึ่งที่มักจะไปนั่งคนเดียวที่ระเบียงทางเชื่อมตึก 1-A เสมอ" },
-
-        // ส่วนที่ 2: พบกับกลุ่มเพื่อนสาว (Yuki, Hana, Rin, Mei)
-        { name: "บรรยาย", icon: "👯‍♀️", text: "ระหว่างทางคุณเดินผ่านกลุ่มเพื่อนสนิท 4 คนของ Kiyana... Yuki, Hana, Rin และ Mei พวกเธอกำลังเดินหัวเราะคิกคักออกมาจากห้องเรียนพอดี" },
-        { name: "Yuki", icon: "👧", text: "อุ๊ย! ดูสิพวกเรา รุ่นพี่สุดหล่อใจดีจากห้อง 2-B มาเดินแถวห้อง 1-A อีกแล้วแฮะ วันนี้เป้าหมายคือใครกันน้า~?" },
-        { name: "Hana", icon: "👧", text: "ไม่ต้องเดาหรอกยูกิ! ก็คงไม่พ้น 'ยัยเด็กติดเกม' ที่นั่งอยู่ตรงโน้นแน่ๆ รุ่นพี่คะ! ฝากดูแล Kiyana ด้วยนะ ยัยนั่นไม่ยอมไปกินข้าวกับพวกเราเลย!" },
-        { name: pName, icon: "😊", text: "ฮ่าๆ พี่แค่จะไปหาที่นั่งทานข้าวเฉยๆ น่ะครับ ไม่ได้มีอะไรพิเศษหรอก (คุณแก้ตัวน้ำขุ่นๆ พร้อมรอยยิ้ม)" },
-
-        // ส่วนที่ 3: การเผชิญหน้า (First Contact)
-        { name: "บรรยาย", icon: "🎮", text: "คุณเดินมาถึงม้านั่งเงียบๆ เห็น Kiyana Hinami กำลังนั่งก้มหน้าก้มตาอยู่กับเครื่อง Nintendo Switch ผมยาวสลวยของเธอปลิวตามลมเบาๆ เธอดูมีสมาธิมากจนไม่สังเกตเห็นคุณเลย" },
-        { 
-            name: "ระบบ", icon: "❓", text: "คุณจะเข้าไปทักทายเธอที่กำลังติดเกมอยู่อย่างไรดี?", 
-            choice: true, 
-            options: [
-                { text: "ทักเรื่องเกม: 'เกมนั้น... ดูท่าทางจะยากน่าดูเลยนะ'", val: 3 },
-                { text: "ทักเรื่องข้าว: 'มานั่งคนเดียวแบบนี้ ทานข้าวหรือยังครับ?'", val: 1 }
-            ] 
-        },
-
-        // ส่วนที่ 4: ปฏิกิริยาของ Kiyana
-        { name: "Kiyana", icon: "😳", text: "เฮือก! ...(เธอสะดุ้งสุดตัวจนเครื่องเกมเกือบหลุดจากมือ)... ร..รุ่นพี่ " + pName + "! มาตั้งแต่เมื่อไหร่คะเนี่ย?!" },
-        { name: "Kiyana", icon: "😶", text: "คือ... หนู... หนูแค่กำลังพยายามเก็บเลเวลให้ทันน่ะค่ะ พอดีบอสตัวนี้มันตีแรงมาก หนูเลยยังไปไหนไม่ได้" },
-        { name: pName, icon: "🍱", text: "พี่ไม่ได้ตั้งใจจะกวนนะ เห็นนั่งคนเดียวเลยอยากมาชวนคุยด้วย พี่ทำแซนวิชมาเยอะเลย พอจะแบ่งเวลาจากเกมมาทานด้วยกันได้ไหม?" },
-
-        // ส่วนที่ 5: บรรยากาศเงียบๆ ที่แสนอบอุ่น (The Bond)
-        { name: "บรรยาย", icon: "🌤️", text: "เธอมองหน้าคุณสลับกับข้าวกล่องด้วยท่าทางลังเล ก่อนจะค่อยๆ ขยับตัวไปด้านข้างเพื่อเว้นที่ว่างให้คุณนั่งลงข้างๆ ความร้อนผ่าวจากไหล่ที่เกือบจะสัมผัสกันทำให้บรรยากาศรอบตัวเริ่มเปลี่ยนไป" },
-        { 
-            name: "ระบบ", icon: "❓", text: "คุณควรทำอย่างไรต่อเพื่อให้เธอรู้สึกผ่อนคลายขึ้น?", 
-            choice: true, 
-            options: [
-                { text: "ขอดูเธอเล่นเกมใกล้ๆ และให้กำลังใจ", val: 2 },
-                { text: "เล่าเรื่องตลกในห้องเรียน 2-B ให้ฟัง", val: 1 }
-            ] 
-        },
-
-        // ส่วนที่ 6: คำสัญญา (Conclusion of Chapter 1)
-        { name: "Kiyana", icon: "😊", text: "ขอบคุณนะคะรุ่นพี่... จริงๆ แล้วนั่งตรงนี้กับรุ่นพี่ก็... ไม่ได้แย่อย่างที่คิดค่ะ แซนวิชก็อร่อยมากด้วย" },
-        { name: pName, icon: "✨", text: "ดีแล้วล่ะครับ ถ้าชอบ พรุ่งนี้พี่จะทำมาฝากอีกนะ ไว้มานั่งทานด้วยกันอีกสิ" },
-        { name: "Kiyana", icon: "😳", text: "...คะ?... อื้อ... แล้วหนูจะรอนะคะ รุ่นพี่ " + pName + "..." },
-        { name: "บรรยาย", icon: "❤️", text: "จบบทที่ 1: 'ชั่วโมงพักเที่ยงที่หายไป' | ความสัมพันธ์ของคุณและ Kiyana พัฒนาขึ้นอีกนิดแล้ว! [Data Saved]" }
+        { label: "สถานการณ์", content: "แสงแดดอ่อนๆ ในช่วงพักเที่ยงส่องลอดผ่านยอดต้นซากุระในรั้วโรงเรียน Yoyogi Academy เสียงระฆังเพิ่งจะจบลง ทิ้งไว้เพียงบรรยากาศที่แสนคึกคัก" },
+        { label: pName, content: "ผมถอนหายใจยาวพลางมองข้าวกล่องในมือ... ในใจไม่ได้คิดถึงเรื่องอาหารเลยแม้แต่น้อย แต่กลับนึกถึง 'Kiyana Hinami' รุ่นน้องที่ชอบนั่งคนเดียวเสมอ" },
+        { label: "ความคิดในใจ", content: "เธอเป็นเด็กประหลาดที่ใครๆ ก็บอกว่าเข้าถึงยาก แต่อิสระและความไม่แคร์โลกของเธอนั่นแหละที่ทำให้ใจผมเต้นแรงมาตลอดหนึ่งปี" },
+        { label: "กลุ่มเพื่อนสาว", content: "Yuki: \"อุ๊ย! รุ่นพี่ " + pName + " มาหา 'ยัยแมวหลง' อีกแล้วเหรอค้า? พยายามเข้านะคะ ฝากละลายน้ำแข็งในใจยัยนั่นด้วย!\"" },
+        { label: "สถานการณ์", content: "คุณเดินผ่านทางเดินที่เงียบสงบหลังตึกเรียน จนกระทั่งเห็นแผ่นหลังเล็กๆ ที่แสนคุ้นเคยนั่งอยู่บนม้านั่งไม้ตัวเดิม" },
+        { label: "การสังเกต", content: "Kiyana กำลังก้มหน้าจนผมปิดตา นิ้วเรียวเล็กของเธอรัวกดปุ่มเครื่องเกมอย่างรวดเร็ว เธอเหมือนหลุดเข้าไปในโลกอื่น" },
+        { label: "ระบบ", content: "Kiyana เริ่มเม้มริมฝีปากแน่น บ่งบอกว่าเธอกำลังสู้กับศัตรูที่ยากมาก คุณจะเริ่มทักทายเธออย่างไร?", 
+          choice: true, options: [{ text: "นั่งลงข้างเธอเงียบๆ", val: 5 }, { text: "ส่งเสียงเรียกชื่อเบาๆ", val: 2 }] },
+        { label: "Kiyana", content: "Kiyana: \"เอ๊ะ!? ...ห..รุ่นพี่ " + pName + "!? โผล่มาจากไหนคะเนี่ย! ตกใจหมดเลย!\"\n(เธอรีบซ่อนเครื่องเกมไว้ข้างหลัง หน้าแดงซ่าน)" },
+        { label: "บทสนทนา", content: "Kiyana: \"ไม่มีเพื่อนคบที่ห้อง 2-B หรือไงคะ? ถึงต้องมาเดินเพ่นพ่านแถวนี้ทุกวัน! ห้ามมองหนูนะ!\"" },
+        { label: "สถานการณ์", content: "ลมพัดพาใบไม้ปลิวผ่านระหว่างคุณและเธอ คุณสังเกตเห็นว่าเธอแอบชำเลืองมองข้าวกล่องของคุณอย่างสงสัย" },
+        { label: "เหตุการณ์", content: "จู่ๆ เสียง 'โครก~' ก็ดังออกมาจากร่างกายของเธอ... Kiyana ตัวแข็งทื่อ หน้าแดงฉ่าไปถึงใบหู" },
+        { label: "Kiyana", content: "Kiyana: \"ม..เมื่อกี้มันเสียงนกค่ะ! ใช่! เสียงนกมันร้องประหลาดน่ะ อย่าเข้าใจผิดนะรุ่นพี่บ้า!\"" },
+        { label: "ระบบ", content: "จังหวะนี้แหละ! คุณจะทำอย่างไรต่อ?", 
+          choice: true, options: [{ text: "ยื่นแซนวิชให้พร้อมรอยยิ้ม", val: 10 }, { text: "แกล้งแซวเรื่องนกร้อง", val: 1 }] },
+        { label: "ปฏิกิริยา", content: "Kiyana ค่อยๆ หันกลับมามองแซนวิช เธอเม้มปากอย่างชั่งใจ ก่อนจะรับไปอย่างกล้าๆ กลัวๆ" },
+        { label: "ความรู้สึก", content: "Kiyana: \"...ชิมเป็นมารยาทก็ได้ค่ะ! ไม่ใช่เพราะหนูหิวหรอกนะ! (เธอกัดเข้าไปคำโตอย่างน่ารัก)\"" },
+        { label: pName, content: pName + ": \"จริง ๆ เธอก็ไม่ได้เข้าถึงยากอย่างที่คนอื่นพูดกันนี่นา\"\nKiyana ชะงักไปครู่หนึ่ง สายตาหม่นลงเล็กน้อย" },
+        { label: "ความจริงใจ", content: pName + ": \"สำหรับพี่... เธอคือคนที่อิสระที่สุดในโรงเรียนนี้ พี่ชื่นชมจุดนั้นของเธอมากนะ\"" },
+        { label: "ผลกระทบ", content: "Kiyana นิ่งอึ้งไป เธอเงยหน้าขึ้นมองสบตาคุณ หัวใจของเธอเต้นแรงจนเธอเริ่มกลัวว่าคุณจะได้ยิน" },
+        { label: "Kiyana", content: "Kiyana: \"...ชอบพูดจาแปลกๆ ตลอดเลยนะรุ่นพี่... นิสัยเสียจริงๆ... (เธอรีบก้มหน้าลงซ่อนรอยยิ้ม)\"" },
+        { label: "สถานการณ์", content: "ความเงียบที่แสนอบอุ่นปกคลุมไปทั่วระเบียง คุณมองดูเธอที่พยายามคีบเกมไปด้วย กินไปด้วยอย่างทุลักทุเล" },
+        { label: pName, content: "ผมขยับเข้าไปใกล้เธออีกนิด... กลิ่นแชมพูอ่อนๆ ลอยมาจากผมของเธอ ทำให้ใจผมสั่นไม่แพ้กัน" },
+        { label: "บทสนทนา", content: "Kiyana: \"จ้องหน้าหนูทำไมคะ? มีอะไรติดหน้าเหรอ? หรือว่า... อยากเล่นเกมด้วยกัน? (เธอถามแบบปากดี)\"" },
+        { label: "ระบบ", content: "เธอเริ่มชวนคุณเข้าสู่โลกของเธอแล้ว! คุณจะตอบว่าอย่างไร?", 
+          choice: true, options: [{ text: "ตอบรับ: 'สอนพี่เล่นหน่อยสิ'", val: 8 }, { text: "ถ่อมตัว: 'พี่เล่นไม่เก่งหรอก'", val: 3 }] },
+        { label: "Kiyana", content: "Kiyana: \"ถ้างั้นตั้งใจดูให้ดีนะคะรุ่นพี่! หนูจะสอนวิธีปราบบอสตัวนี้ให้ดูเป็นขวัญตาเอง!\"" },
+        { label: "ความใกล้ชิด", content: "เธอขยับเข้ามาใกล้เพื่อโชว์หน้าจอเกมให้คุณดู ระยะห่างที่ลดลงทำให้คุณเห็นพวงแก้มสีชมพูของเธอชัดเจน" },
+        { label: "สถานการณ์", content: "พวกเราใช้เวลาพักเที่ยงด้วยกันจนลืมเวลา เสียงกดปุ่มสลับกับเสียงหัวเราะเบาๆ ดังขึ้นเป็นครั้งแรก" },
+        { label: "ความคิดในใจ", content: "Kiyana: (ทำไมรุ่นพี่คนนี้... ถึงทำให้เรารู้สึกผ่อนคลายได้ขนาดนี้นะ ทั้งที่ปกติเราเกลียดคนอื่นจะตาย)" },
+        { label: "คำสัญญา", content: "ระฆังคาบบ่ายดังขึ้น Kiyana รีบเก็บของ\nKiyana: \"พรุ่งนี้... ถ้าแซนวิชเหลืออีก... ก็เอามาได้นะ! หนูไม่ได้รอหรอกนะ!\"" },
+        { label: "สถานการณ์", content: "เธอยิ้มให้คุณอย่างรวดเร็วก่อนจะวิ่งจากไป ทิ้งให้คุณยืนยิ้มอยู่ท่ามกลางกลีบซากุระ" },
+        { label: "บทสรุป", content: "การเดินทางบทแรกจบลงพร้อมกับระยะห่างที่หายไป... บทเรียนความรักบทที่ 1 สำเร็จแล้ว!" }
     ];
 
-    // --- 🎮 ฟังก์ชันระบบเกม ---
+    // --- ⚙️ Game Logic ---
 
-    function showNameInput() {
-        document.getElementById('menu-screen').classList.add('hidden');
-        document.getElementById('name-screen').classList.remove('hidden');
-    }
-
-    function backToMenu() {
+    function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById('menu-screen').classList.remove('hidden');
-        checkContinueBtn();
+        document.getElementById(id).classList.remove('hidden');
+        if(id === 'screen-continue-select') renderCont();
+        if(id === 'screen-menu') checkS();
     }
 
-    function initNewGame() {
-        const input = document.getElementById('p-name-input').value;
-        if (!input.trim()) return alert("ใส่ชื่อด้วยนะรุ่นพี่!");
-        pName = input;
-        step = 0;
-        lovePts = 0;
-        document.getElementById('name-screen').classList.add('hidden');
-        render();
+    function prepStart(id) { chId = id; showScreen('screen-name'); }
+
+    function beginStory() {
+        const val = document.getElementById('p-name-input').value;
+        if (!val.trim()) return alert("กรุณาใส่ชื่อ!");
+        pName = val; step = 0; love = 0;
+        showScreen('hidden'); 
+        renderS();
     }
 
-    function render() {
-        const story = getStory();
-        const data = story[step];
+    function renderS() {
+        const data = getStory()[step];
         if (!data) return;
 
-        document.getElementById('name-tag').innerText = data.name;
-        document.getElementById('text-content').innerText = data.text;
-        document.getElementById('bg-scene').innerText = data.icon;
+        document.getElementById('name-label').innerText = data.label;
+        document.getElementById('text-content').innerHTML = data.content;
 
-        const nextBtn = document.getElementById('btn-next');
-        const choiceBox = document.getElementById('choice-box');
+        const nxt = document.getElementById('btn-next');
+        const area = document.getElementById('choice-area');
 
         if (data.choice) {
-            nextBtn.style.display = 'none';
-            choiceBox.style.display = 'flex';
-            choiceBox.innerHTML = '';
+            nxt.classList.add('hidden');
+            area.style.display = 'flex';
+            area.innerHTML = '';
             data.options.forEach(opt => {
                 const b = document.createElement('button');
-                b.className = "btn-menu";
-                b.style.fontSize = "1rem";
-                b.innerText = opt.text;
-                b.onclick = () => {
-                    lovePts += opt.val;
-                    step++;
-                    choiceBox.style.display = 'none';
-                    nextBtn.style.display = 'block';
-                    render();
-                };
-                choiceBox.appendChild(b);
+                b.className = 'btn-main'; b.style.width = '100%'; b.innerText = opt.text;
+                b.onclick = () => { love += opt.val; step++; area.style.display = 'none'; nxt.classList.remove('hidden'); renderS(); };
+                area.appendChild(b);
             });
-        } else {
-            nextBtn.style.display = 'block';
-            choiceBox.style.display = 'none';
+        } else { area.style.display = 'none'; nxt.classList.remove('hidden'); }
+
+        if (step === getStory().length - 1 && !completed.includes(chId)) { completed.push(chId); saveGame(true); }
+    }
+
+    function doNext() { if (step < getStory().length - 1) { step++; renderS(); } }
+
+    function saveGame(silent = false) {
+        const d = { pName, step, love, completed };
+        localStorage.setItem('kiyana_v1_0', JSON.stringify(d));
+        if(!silent) alert("บันทึกสำเร็จ!");
+    }
+
+    function renderCont() {
+        const list = document.getElementById('cont-list'); list.innerHTML = '';
+        const isDone = completed.includes(1);
+        const b = document.createElement('button');
+        b.className = 'btn-main';
+        b.innerHTML = `Chapter 1: The Loner's Rhythm ${isDone ? '<span class="status-success">(สำเร็จ)</span>' : ''}`;
+        b.onclick = () => {
+            const s = JSON.parse(localStorage.getItem('kiyana_v1_0'));
+            pName = s.pName; step = s.step; love = s.love; showScreen('hidden'); renderS();
+        };
+        list.appendChild(b);
+    }
+
+    function checkS() {
+        const s = localStorage.getItem('kiyana_v1_0');
+        if (s) {
+            const d = JSON.parse(s);
+            completed = d.completed || [];
+            document.getElementById('btn-menu-cont').disabled = false;
         }
     }
 
-    function nextStep() {
-        const story = getStory();
-        if (step < story.length - 1) {
-            step++;
-            render();
-        }
-    }
+    function resetGame() { if (confirm("ลบข้อมูลทั้งหมด?")) { localStorage.removeItem('kiyana_v1_0'); location.reload(); } }
 
-    // --- 💾 ระบบ Save/Load/Reset ---
-
-    function saveGame() {
-        const data = { pName, step, lovePts };
-        localStorage.setItem('kiyana_save_v1_3', JSON.stringify(data));
-        alert("บันทึกความคืบหน้าสำเร็จ!");
-    }
-
-    function continueGame() {
-        const saved = localStorage.getItem('kiyana_save_v1_3');
-        if (saved) {
-            const data = JSON.parse(saved);
-            pName = data.pName;
-            step = data.step;
-            lovePts = data.lovePts;
-            document.getElementById('menu-screen').classList.add('hidden');
-            render();
-        }
-    }
-
-    function checkContinueBtn() {
-        const saved = localStorage.getItem('kiyana_save_v1_3');
-        document.getElementById('btn-continue').disabled = !saved;
-    }
-
-    function resetAll() {
-        if (confirm("ต้องการลบเซฟและเริ่มใหม่ทั้งหมดใช่ไหม?")) {
-            localStorage.removeItem('kiyana_save_v1_3');
-            location.reload();
-        }
-    }
-
-    window.onload = checkContinueBtn;
+    window.onload = checkS;
 </script>
 
 </body>
-          </html>
-          
+</html>
